@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Love!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e0f2f1, #fff8e1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #00897b;
+            margin-bottom: 20px;
+            font-size: 2.8rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #ff8f00;
+            margin-bottom: 40px;
+            font-size: 1.3rem;
+            font-style: italic;
+        }
+        
+        .letter-container {
+            position: relative;
+            width: 500px;
+            height: 400px;
+            margin: 0 auto 40px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+        
+        .letter {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .letter.open {
+            transform: rotateY(-180deg);
+        }
+        
+        .letter-front, .letter-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 137, 123, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .letter-front {
+            background: linear-gradient(135deg, #4db6ac, #80cbc4);
+            transform: rotateY(0deg);
+            z-index: 2;
+        }
+        
+        .letter-back {
+            background: #fff;
+            transform: rotateY(180deg);
+            overflow-y: auto;
+            text-align: left;
+            padding: 30px;
+            border: 2px solid #4db6ac;
+        }
+        
+        .envelope {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4db6ac, #80cbc4);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 2px solid #00897b;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        
+        .envelope:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(135deg, #26a69a, #4db6ac);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .envelope-seal {
+            width: 80px;
+            height: 80px;
+            background: #ff8f00;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+        
+        .click-text {
+            margin-top: 20px;
+            color: #fff;
+            font-style: italic;
+            z-index: 1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-size: 1.1rem;
+        }
+        
+        .letter-content {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .letter-content h2 {
+            color: #00897b;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .letter-content p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            font-size: 1.15rem;
+            color: #555;
+        }
+        
+        .signature {
+            margin-top: 25px;
+            text-align: right;
+            font-style: italic;
+            color: #ff8f00;
+            font-size: 1.2rem;
+        }
+        
+        .birthday-cake {
+            margin-top: 30px;
+            font-size: 2.5rem;
+            animation: bounce 2s infinite;
+            text-align: center;
+        }
+        
+        /* Music Player Styles */
+        .music-player {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 20px;
+            width: 350px;
+            margin: 0 auto 30px;
+            box-shadow: 0 10px 25px rgba(0, 137, 123, 0.15);
+            border: 1px solid #4db6ac;
+        }
+        
+        .song-info {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .song-title {
+            font-size: 1.3rem;
+            color: #00897b;
+            font-weight: bold;
+        }
+        
+        .song-artist {
+            font-size: 1rem;
+            color: #ff8f00;
+            margin-top: 5px;
+        }
+        
+        .progress-container {
+            background: #e0f2f1;
+            border-radius: 5px;
+            height: 6px;
+            width: 100%;
+            margin: 15px 0;
+            cursor: pointer;
+        }
+        
+        .progress {
+            background: #ff8f00;
+            border-radius: 5px;
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #00897b;
+            margin-top: 5px;
+        }
+        
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            background: #ff8f00;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 143, 0, 0.3);
+        }
+        
+        .control-btn:hover {
+            background: #ff6f00;
+            transform: scale(1.1);
+        }
+        
+        .volume-container {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .volume-slider {
+            width: 100%;
+            margin-left: 10px;
+            -webkit-appearance: none;
+            height: 5px;
+            border-radius: 5px;
+            background: #e0f2f1;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ff8f00;
+            cursor: pointer;
+        }
+        
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 1.5rem;
+            color: #ff8f00;
+            opacity: 0.7;
+            animation: float 6s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+            100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
+        }
+        
+        .footer {
+            margin-top: 20px;
+            color: #00897b;
+            font-size: 1rem;
+            font-style: italic;
+        }
+        
+        /* Custom scrollbar for letter content */
+        .letter-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .letter-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .letter-content::-webkit-scrollbar-thumb {
+            background: #4db6ac;
+            border-radius: 10px;
+        }
+        
+        .letter-content::-webkit-scrollbar-thumb:hover {
+            background: #26a69a;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .letter-container {
+                width: 90%;
+                height: 350px;
+            }
+            
+            .music-player {
+                width: 90%;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .letter-content p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Happy Birthday, My Love!</h1>
+        <p class="subtitle">A special message just for you on your special day</p>
+        
+        <!-- Music Player -->
+        <div class="music-player">
+            <div class="song-info">
+                <div class="song-title">My Love Mine All Mine</div>
+                <div class="song-artist">Mitski</div>
+            </div>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="time-info">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+            
+            <div class="player-controls">
+                <button class="control-btn" id="prevBtn">⏮</button>
+                <button class="control-btn" id="playBtn">▶️</button>
+                <button class="control-btn" id="nextBtn">⏭</button>
+            </div>
+            
+            <div class="volume-container">
+                <span>🔊</span>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+            </div>
+        </div>
+        
+        <!-- Letter -->
+        <div class="letter-container" id="letterContainer">
+            <div class="letter" id="letter">
+                <div class="letter-front">
+                    <div class="envelope">
+                        <div class="envelope-seal">💖</div>
+                        <p class="click-text">Click to open your letter</p>
+                    </div>
+                </div>
+                <div class="letter-back">
+                    <div class="letter-content">
+                        <h2>My Dearest [Her Name],</h2>
+                        <p>On this wonderful day that marks your birth, I wanted to take a moment to tell you how incredibly special you are to me.</p>
+                        <p>Your smile has the power to brighten even the cloudiest of days, your laughter is the most beautiful melody, and your presence in my life is a gift I thank the universe for every single day.</p>
+                        <p>You deserve all the happiness, love, and wonderful experiences that life has to offer. I hope this birthday brings you everything you've been dreaming of and more.</p>
+                        <p>Thank you for being the amazing, kind, and beautiful person you are. May this year be filled with joy, adventure, and beautiful memories that will last a lifetime.</p>
+                        <div class="signature">
+                            <p>With all my love,</p>
+                            <p>[Your Name]</p>
+                        </div>
+                        <div class="birthday-cake">🎂 🎉 🎁</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Made with love for your special day 💖
+        </div>
+    </div>
+
+    <div class="hearts" id="heartsContainer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const letterContainer = document.getElementById('letterContainer');
+            const letter = document.getElementById('letter');
+            const heartsContainer = document.getElementById('heartsContainer');
+            
+            // Create floating hearts
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+                heartsContainer.appendChild(heart);
+            }
+            
+            // Letter opening functionality
+            letterContainer.addEventListener('click', function() {
+                letter.classList.toggle('open');
+                
+                // Change cursor after opening
+                if (letter.classList.contains('open')) {
+                    letterContainer.style.cursor = 'default';
+                } else {
+                    letterContainer.style.cursor = 'pointer';
+                }
+            });
+            
+            // Music Player Functionality
+            // REPLACE 'my-love-mine-all-mine.mp3' WITH YOUR ACTUAL MP3 FILENAME
+            const audio = new Audio("Mitski - My Love Mine All Mine (Lyrics).mp3");
+            audio.volume = 0.5;
+            
+            const playBtn = document.getElementById('playBtn');
+            const progress = document.getElementById('progress');
+            const progressContainer = document.getElementById('progressContainer');
+            const currentTimeEl = document.getElementById('currentTime');
+            const durationEl = document.getElementById('duration');
+            const volumeSlider = document.getElementById('volumeSlider');
+            
+            let isPlaying = false;
+            
+            // Play/Pause functionality
+            function togglePlay() {
+                if (isPlaying) {
+                    audio.pause();
+                    playBtn.innerHTML = '▶️';
+                } else {
+                    audio.play();
+                    playBtn.innerHTML = '⏸️';
+                }
+                isPlaying = !isPlaying;
+            }
+            
+            // Update progress bar
+            function updateProgress(e) {
+                const { duration, currentTime } = e.srcElement;
+                const progressPercent = (currentTime / duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+                
+                // Update time displays
+                currentTimeEl.textContent = formatTime(currentTime);
+                if (duration) {
+                    durationEl.textContent = formatTime(duration);
+                }
+            }
+            
+            // Set progress
+            function setProgress(e) {
+                const width = this.clientWidth;
+                const clickX = e.offsetX;
+                const duration = audio.duration;
+                
+                audio.currentTime = (clickX / width) * duration;
+            }
+            
+            // Format time
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+            
+            // Volume control
+            function setVolume() {
+                audio.volume = volumeSlider.value;
+            }
+            
+            // Event listeners for music player
+            playBtn.addEventListener('click', togglePlay);
+            audio.addEventListener('timeupdate', updateProgress);
+            audio.addEventListener('ended', () => {
+                isPlaying = false;
+                playBtn.innerHTML = '▶️';
+            });
+            audio.addEventListener('loadedmetadata', () => {
+                durationEl.textContent = formatTime(audio.duration);
+            });
+            progressContainer.addEventListener('click', setProgress);
+            volumeSlider.addEventListener('input', setVolume);
+            
+            // Next/Previous buttons (for future functionality)
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                audio.currentTime = 0;
+            });
+            
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                audio.currentTime = 0;
+            });
+        });
+    </script>
+</body>
+</html>
